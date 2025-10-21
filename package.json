@@ -1,0 +1,57 @@
+{
+  "name": "langslator",
+  "displayName": "Langslator",
+  "description": "Translate the Selected Text instantly using your Hugging Face API.",
+  "version": "0.0.1",
+  "publisher": "spharshid", 
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onCommand:lightTranslator.translateSelection"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "lightTranslator.translateSelection",
+        "title": "Langslator: Translate Selected Text"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "lightTranslator.translateSelection",
+          "group": "navigation",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Langslator Settings",
+      "properties": {
+        "lightTranslator.apiUrl": {
+          "type": "string",
+          "default": "https://harshiddev-text-translator.hf.space/translate",
+          "description": "API endpoint for translation requests."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "node esbuild.js --production",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.105.0",
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint": "^9.36.0",
+    "esbuild": "^0.25.10",
+    "typescript": "^5.9.3"
+  }
+}

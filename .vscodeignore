@@ -1,0 +1,8 @@
+node_modules
+.vscode
+src
+esbuild.js
+tsconfig.json
+.vscodeignore
+.git
+README.md
