@@ -1,7 +1,7 @@
 {
   "name": "langslator",
   "displayName": "Langslator",
-  "description": "Translate the Selected Text instantly using your Hugging Face API.",
+  "description": "Translate the Selected Text instantly using this Langslator Extension",
   "version": "0.0.2",
   "publisher": "spharshid",
   "icon": "images/Langslator.jpg",
