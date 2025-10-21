@@ -2,13 +2,22 @@
   "name": "langslator",
   "displayName": "Langslator",
   "description": "Translate the Selected Text instantly using your Hugging Face API.",
-  "version": "0.0.1",
-  "publisher": "spharshid", 
+  "version": "0.0.2",
+  "publisher": "spharshid",
+  "icon": "images/Langslator.jpg",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spharshid/langslator.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Other"],
-  "activationEvents": ["onCommand:lightTranslator.translateSelection"],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:lightTranslator.translateSelection"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -46,12 +55,12 @@
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
-    "@types/vscode": "^1.105.0",
     "@types/node": "^22.0.0",
+    "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
     "@typescript-eslint/parser": "^8.45.0",
-    "eslint": "^9.36.0",
     "esbuild": "^0.25.10",
+    "eslint": "^9.36.0",
     "typescript": "^5.9.3"
   }
 }
