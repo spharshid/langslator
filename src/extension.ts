@@ -11,6 +11,9 @@ const LANG_MAP: Record<string, string> = {
     "German": "de",
     "Italian": "it",    
     "Dutch": "nl",
+    "Chinese":"zh",
+    "Arabic": "ar",
+    "Russsian": "ru"
 };
 
 export function activate(context: vscode.ExtensionContext) {
