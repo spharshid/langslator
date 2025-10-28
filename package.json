@@ -2,13 +2,14 @@
   "name": "langslator",
   "displayName": "Langslator",
   "description": "Translate the Selected Text instantly using this Langslator Extension",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "spharshid",
   "icon": "images/Langslator.jpg",
   "repository": {
     "type": "git",
     "url": "https://github.com/spharshid/langslator.git"
   },
+  "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
   },

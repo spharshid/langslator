@@ -14,6 +14,9 @@ Langslator is a lightweight and elegant Visual Studio Code extension that allows
 - German (`de`)
 - Italian (`it`)
 - Dutch (`nl`)
+- Chinese(`zh`)
+- Arabic (`ar`)
+- Russsian (`ru`)
 
 ✅ Works directly inside VS Code — no external window required.  
 ✅ Fast and free — uses the public Hugging Face Space backend (`harshiddev/Text_Translator`).  
