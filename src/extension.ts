@@ -9,15 +9,15 @@ const LANG_MAP: Record<string, string> = {
     "French": "fr",
     "Spanish": "es",
     "German": "de",
-    "Italian": "it",    
+    "Italian": "it",
     "Dutch": "nl",
-    "Chinese":"zh",
+    "Chinese": "zh",
     "Arabic": "ar",
-    "Russsian": "ru"
+    "Russian": "ru"
 };
 
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('lightTranslator.translateSelection', async () => {
+    const disposable = vscode.commands.registerCommand('lightTranslator.translateSelection', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showInformationMessage('Open a file and select text to translate.');
@@ -25,49 +25,117 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const selection = editor.selection;
-        const text = editor.document.getText(selection).trim();
+        const raw = editor.document.getText(selection);
+        const text = raw.trim();
         if (!text) {
             vscode.window.showInformationMessage('No text selected.');
             return;
         }
 
-        // Language selection
-        const choice = await vscode.window.showQuickPick(
-            Object.keys(LANG_MAP),
-            { placeHolder: 'Select target language' }
-        );
-
+        const choice = await vscode.window.showQuickPick(Object.keys(LANG_MAP), { placeHolder: 'Select target language' });
         if (!choice) return;
-
         const lang = LANG_MAP[choice];
 
-        // API URL
         const apiUrl = vscode.workspace.getConfiguration('lightTranslator').get('apiUrl') as string || 'https://harshiddev-text-translator.hf.space/translate';
+        const newline = detectNewline(raw);
+
+        // --- Improved JSON detection ---
+        let parsed: any = null;
+        let wrapped = false;
+
+        const tryParseJson = (candidate: string): any | null => {
+            try {
+                return JSON.parse(candidate);
+            } catch {
+                return null;
+            }
+        };
+
+        // Normalize possible trailing commas
+        const normalized = text.replace(/,\s*([}\]])/g, '$1');
+
+        // Try raw
+        parsed = tryParseJson(normalized);
+
+        // Try wrapping in {}
+        if (parsed === null && /^[\s\r\n]*"[^"]+"\s*:/.test(normalized)) {
+            parsed = tryParseJson(`{${normalized}}`);
+            if (parsed) wrapped = true;
+        }
+
+        // Try trimming stray commas
+        if (parsed === null && /,\s*$/.test(normalized)) {
+            parsed = tryParseJson(`{${normalized.replace(/,\s*$/, '')}}`);
+            if (parsed) wrapped = true;
+        }
+
+        // Recursive translation of values only
+        async function translateRecursive(obj: any): Promise<any> {
+            if (typeof obj === 'string') {
+                return await translateText(obj);
+            } else if (Array.isArray(obj)) {
+                return Promise.all(obj.map(item => translateRecursive(item)));
+            } else if (obj && typeof obj === 'object') {
+                const out: any = {};
+                for (const [k, v] of Object.entries(obj)) {
+                    out[k] = await translateRecursive(v);
+                }
+                return out;
+            } else {
+                return obj;
+            }
+        }
+
+        async function translateText(s: string): Promise<string> {
+            if (!s || s.trim() === '') return s;
+            try {
+                const resp = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: s, lang })
+                });
+                const data = await resp.json();
+                return data.translated ?? s;
+            } catch {
+                return s;
+            }
+        }
 
         try {
-            const resp = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text, lang })
-            });
+            let resultText: string;
 
-            const data = await resp.json();
+            if (parsed !== null) {
+                vscode.window.showInformationMessage('Detected JSON — translating values recursively...');
+                const translated = await translateRecursive(parsed);
 
-            if (data.translated) {
-                const summary = data.translated.length > 250 ? data.translated.slice(0, 250) + '...' : data.translated;
-                vscode.window.showInformationMessage(`Translation: ${summary}`);
+                const formatted = JSON.stringify(translated, null, 2);
 
-                editor.edit(editBuilder => {
-                    editBuilder.replace(selection, data.translated);
-                });
-            } else if (data.error) {
-                vscode.window.showErrorMessage(`Translation error: ${data.error}`);
+                // Remove wrapping braces if originally not wrapped
+                if (wrapped) {
+                    const inner = formatted
+                        .trim()
+                        .replace(/^{/, '')
+                        .replace(/}$/, '')
+                        .trim();
+                    resultText = inner + newline;
+                } else {
+                    resultText = formatted + newline;
+                }
             } else {
-                vscode.window.showErrorMessage('Unexpected response from translator API');
+                vscode.window.showInformationMessage('Translating plain text...');
+                const translated = await translateText(text);
+                const leadingWs = raw.match(/^\s*/)?.[0] ?? '';
+                const trailingWs = raw.match(/\s*$/)?.[0] ?? '';
+                resultText = leadingWs + translated + trailingWs;
             }
 
+            await editor.edit(editBuilder => {
+                editBuilder.replace(selection, resultText);
+            });
+
+            vscode.window.showInformationMessage('✅ Translation finished.');
         } catch (err: any) {
-            vscode.window.showErrorMessage(`Request failed: ${err.message}`);
+            vscode.window.showErrorMessage(`Translation failed: ${err?.message || err}`);
         }
     });
 
@@ -75,3 +143,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {}
+
+// ----------------- Helpers -----------------
+function detectNewline(s: string): string {
+    return s.includes('\r\n') ? '\r\n' : '\n';
+}

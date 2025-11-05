@@ -27,7 +27,7 @@ Langslator is a lightweight and elegant Visual Studio Code extension that allows
 
 ## 🚀 How to Use
 
-1. **Select** any text in your VS Code editor.
+1. **Select** any text or JSON data in your VS Code editor.
 2. Press **`Ctrl + Shift + P`** (or **`Cmd + Shift + P`** on macOS) or right cLick.
 3. Type and choose  
    **`Langslator : Translate Selected Expression`**

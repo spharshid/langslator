@@ -2,7 +2,7 @@
   "name": "langslator",
   "displayName": "Langslator",
   "description": "Translate the Selected Text instantly using this Langslator Extension",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "spharshid",
   "icon": "images/Langslator.jpg",
   "repository": {
