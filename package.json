@@ -2,7 +2,7 @@
   "name": "langslator",
   "displayName": "Langslator",
   "description": "Translate the Selected Text instantly using this Langslator Extension",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "spharshid",
   "icon": "images/Langslator.jpg",
   "repository": {
@@ -17,7 +17,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:lightTranslator.translateSelection"
+    "onCommand:lightTranslator.translateSelection",
+    "onFileSystem:langslator-preview"
   ],
   "main": "./dist/extension.js",
   "contributes": {

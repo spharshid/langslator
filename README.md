@@ -21,7 +21,7 @@ Langslator is a lightweight and elegant Visual Studio Code extension that allows
 ✅ Works directly inside VS Code — no external window required.  
 ✅ Fast and free — uses the public Hugging Face Space backend (`harshiddev/Text_Translator`).  
 ✅ Secure — no login, no API key needed.  
-✅ Replace selected text automatically with the translated version.  
+✅ Instantly apply translation with a safe Diff Review (Accept/Reject) workflow.  
 
 ---
 
@@ -32,7 +32,9 @@ Langslator is a lightweight and elegant Visual Studio Code extension that allows
 3. Type and choose  
    **`Langslator : Translate Selected Expression`**
 4. Choose your target language from the dropdown.
-5. The translated text replaces your selection instantly.
+5. The translation applies instantly to your file.
+6. A **Diff View** opens for you to review the changes.
+7. Click **Accept** to keep the translation or **Reject** to undo it.
 
 💡 You’ll also see a quick summary of the translation as a notification.
 
