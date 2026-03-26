@@ -153,7 +153,9 @@ export function activate(context: vscode.ExtensionContext) {
         if (!choice) return;
         const lang = LANG_MAP[choice];
 
-        const apiUrl = vscode.workspace.getConfiguration('lightTranslator').get('apiUrl') as string || 'https://harshiddev-text-translator.hf.space/translate';
+        const config = vscode.workspace.getConfiguration('lightTranslator');
+        const apiUrl = config.get('apiUrl') as string || 'https://harshiddev-text-translator.hf.space/translate';
+        const useDiffEditor = config.get('useDiffEditor', true);
         const newline = detectNewline(raw);
 
         // --- Improved JSON detection ---
@@ -248,6 +250,12 @@ export function activate(context: vscode.ExtensionContext) {
                     return;
                 }
 
+                if (!useDiffEditor) {
+                    // No diff editor requested; just finish.
+                    vscode.window.showInformationMessage(`Translated to ${choice} successfully.`);
+                    return;
+                }
+
                 // 2. PREPARE LEFT SIDE (Original Backup)
                 const originalReadonlyUri = editor.document.uri.with({ 
                     scheme: OriginalDocumentProvider.scheme,
@@ -287,6 +295,14 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showErrorMessage(`Translation failed: ${err?.message || err}`);
         }
     });
+
+    // Command: Toggle Diff Editor Review
+    context.subscriptions.push(vscode.commands.registerCommand('langslator.toggleDiffEditor', async () => {
+        const config = vscode.workspace.getConfiguration('lightTranslator');
+        const currentValue = config.get('useDiffEditor', false);
+        await config.update('useDiffEditor', !currentValue, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage(`Langslator Diff Editor Review is now ${!currentValue ? 'ENABLED' : 'DISABLED'}.`);
+    }));
 
     context.subscriptions.push(disposable);
 }

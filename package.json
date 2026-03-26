@@ -26,6 +26,10 @@
       {
         "command": "lightTranslator.translateSelection",
         "title": "Langslator: Translate Selected Text"
+      },
+      {
+        "command": "langslator.toggleDiffEditor",
+        "title": "Langslator: Toggle Diff Editor Review"
       }
     ],
     "menus": {
@@ -45,6 +49,11 @@
           "type": "string",
           "default": "https://harshiddev-text-translator.hf.space/translate",
           "description": "API endpoint for translation requests."
+        },
+        "lightTranslator.useDiffEditor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable diff editor review for translations. If false, translations are applied immediately."
         }
       }
     }
