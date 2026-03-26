@@ -8,11 +8,13 @@ const LANG_MAP: Record<string, string> = {
     "English": "en",
     "French": "fr",
     "Spanish": "es",
+    "Arabic": "ar",
+    "Slovenian": "sl",
+    "Tamil": "ta",
     "German": "de",
     "Italian": "it",
     "Dutch": "nl",
     "Chinese": "zh",
-    "Arabic": "ar",
     "Russian": "ru"
 };
 
