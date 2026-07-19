@@ -156,7 +156,7 @@ export function activate(context: vscode.ExtensionContext) {
         const lang = LANG_MAP[choice];
 
         const config = vscode.workspace.getConfiguration('lightTranslator');
-        const apiUrl = config.get('apiUrl') as string || 'https://harshiddev-text-translator.hf.space/translate';
+        const apiUrl = config.get('apiUrl') as string || 'https://spharshid-text-translator.hf.space/translate';
         const useDiffEditor = config.get('useDiffEditor', true);
         const newline = detectNewline(raw);
 
